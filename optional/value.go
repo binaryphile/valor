@@ -6,6 +6,7 @@ package optional
 
 import (
 	"encoding/json"
+	"reflect"
 )
 
 // Value either contains a value (ok) or nothing (not ok).
@@ -68,6 +69,16 @@ func OfNotOk[T any]() Value[T] {
 	return Value[T]{}
 }
 
+// OfNonZero creates an ok Value if nonzero otherwise not ok.
+func OfNonZero[T any](value T) Value[T] {
+	// 🤮
+	if reflect.ValueOf(&value).Elem().IsZero() {
+		return OfNotOk[T]()
+	}
+
+	return OfOk(value)
+}
+
 // IsOk returns whether v contains a value.
 func (val Value[T]) IsOk() bool {
 	return val.ok
@@ -112,6 +123,14 @@ func (val Value[T]) OrElse(f func() T) T {
 		return val.v
 	}
 	return f()
+}
+
+func (val Value[T]) SelfOr(def Value[T]) Value[T] {
+	if val.IsOk() {
+		return val
+	}
+
+	return def
 }
 
 // OfOk creates an ok Value of the underlying value.
