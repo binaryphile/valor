@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/phelmkamp/valor/funcs"
-	"github.com/phelmkamp/valor/tuple/two"
+	"github.com/binaryphile/valor/funcs"
+	"github.com/binaryphile/valor/tuple/two"
 )
 
 func get() (string, int, bool) {

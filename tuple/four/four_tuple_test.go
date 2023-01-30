@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/phelmkamp/valor/funcs"
-	"github.com/phelmkamp/valor/tuple/four"
+	"github.com/binaryphile/valor/funcs"
+	"github.com/binaryphile/valor/tuple/four"
 )
 
 func get() (string, int, float32, []int, bool) {

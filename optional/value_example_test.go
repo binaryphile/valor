@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/phelmkamp/valor/optional"
+	"github.com/binaryphile/valor/optional"
 )
 
 type Map[K comparable, V any] struct {

@@ -18,10 +18,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/phelmkamp/valor/optional"
-	"github.com/phelmkamp/valor/tuple/four"
-	"github.com/phelmkamp/valor/tuple/singleton"
-	"github.com/phelmkamp/valor/tuple/two"
+	"github.com/binaryphile/valor/optional"
+	"github.com/binaryphile/valor/tuple/four"
+	"github.com/binaryphile/valor/tuple/singleton"
+	"github.com/binaryphile/valor/tuple/two"
 )
 
 // type checks

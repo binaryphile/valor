@@ -6,8 +6,8 @@
 package three
 
 import (
-	"github.com/phelmkamp/valor/optional"
-	"github.com/phelmkamp/valor/result"
+	"github.com/binaryphile/valor/optional"
+	"github.com/binaryphile/valor/result"
 )
 
 // Tuple contains three values.

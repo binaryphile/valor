@@ -6,7 +6,7 @@ package value
 
 import (
 	"fmt"
-	"github.com/phelmkamp/valor/optional"
+	"github.com/binaryphile/valor/optional"
 )
 
 // Value either contains a value (ok) or nothing (not ok).

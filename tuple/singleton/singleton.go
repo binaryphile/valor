@@ -7,8 +7,8 @@ package singleton
 
 import (
 	"fmt"
-	"github.com/phelmkamp/valor/tuple/two"
-	"github.com/phelmkamp/valor/tuple/unit"
+	"github.com/binaryphile/valor/tuple/two"
+	"github.com/binaryphile/valor/tuple/unit"
 )
 
 // Set contains at most one element.

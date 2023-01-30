@@ -6,10 +6,10 @@ package value_test
 
 import (
 	"fmt"
-	"github.com/phelmkamp/valor/tuple/four"
-	"github.com/phelmkamp/valor/tuple/singleton"
-	"github.com/phelmkamp/valor/tuple/two"
-	"github.com/phelmkamp/valor/value"
+	"github.com/binaryphile/valor/tuple/four"
+	"github.com/binaryphile/valor/tuple/singleton"
+	"github.com/binaryphile/valor/tuple/two"
+	"github.com/binaryphile/valor/value"
 	"math/rand"
 	"strconv"
 	"strings"

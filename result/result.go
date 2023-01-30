@@ -8,7 +8,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/phelmkamp/valor/optional"
+	"github.com/binaryphile/valor/optional"
 )
 
 var (

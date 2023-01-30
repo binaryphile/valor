@@ -2,7 +2,7 @@ package singleton_test
 
 import (
 	"fmt"
-	"github.com/phelmkamp/valor/tuple/singleton"
+	"github.com/binaryphile/valor/tuple/singleton"
 )
 
 func Example() {

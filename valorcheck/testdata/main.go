@@ -7,9 +7,9 @@ package main
 import (
 	"strings"
 
-	"github.com/phelmkamp/valor/enum"
-	"github.com/phelmkamp/valor/optional"
-	"github.com/phelmkamp/valor/result"
+	"github.com/binaryphile/valor/enum"
+	"github.com/binaryphile/valor/optional"
+	"github.com/binaryphile/valor/result"
 )
 
 var (
