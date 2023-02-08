@@ -125,6 +125,16 @@ func (val Value[T]) OrElse(f func() T) T {
 	return f()
 }
 
+// SelfOrElse returns the optional value if ok, or the result of f if not ok.
+func (val Value[T]) SelfOrElse(f func() Value[T]) Value[T] {
+	if val.IsOk() {
+		return val
+	}
+
+	return f()
+}
+
+// SelfOr returns the optional value if ok, or def if not ok.
 func (val Value[T]) SelfOr(def Value[T]) Value[T] {
 	if val.IsOk() {
 		return val
