@@ -39,6 +39,15 @@ func OfPointer[T any](p *T) Value[*T] {
 	return OfOk(p)
 }
 
+// OfPointee creates a Value of the target of pointer p.
+// Returns a not-ok Value if p is nil.
+func OfPointee[T any](p *T) Value[T] {
+	if p == nil {
+		return OfNotOk[T]()
+	}
+	return OfOk(*p)
+}
+
 // OfAssert performs the type assertion x.(T) and creates a Value of the result.
 // Returns a not-ok Value if the type assertion fails.
 func OfAssert[T, Tx any](x Tx) Value[T] {
