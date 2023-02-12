@@ -79,9 +79,8 @@ func OfNotOk[T any]() Value[T] {
 }
 
 // OfNonZero creates an ok Value if nonzero otherwise not ok.
-func OfNonZero[T any](value T) Value[T] {
-	// 🤮
-	if reflect.ValueOf(&value).Elem().IsZero() {
+func OfNonZero[T comparable](value T) (zero Value[T]) {
+	if
 		return OfNotOk[T]()
 	}
 
