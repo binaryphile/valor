@@ -80,8 +80,20 @@ func OfNotOk[T any]() Value[T] {
 
 // OfNonZero creates an ok Value if nonzero otherwise not ok.
 func OfNonZero[T comparable](value T) (zero Value[T]) {
-	if
-		return OfNotOk[T]()
+	if value != zero.v {
+		return OfOk(value)
+	}
+
+	return
+}
+
+// OfFunc creates an ok Value if value is non-nil otherwise not ok.
+// It's more efficient to use a non-reflection-based method if you need performance.
+// E.g. #Of(myFunc, myFunc != nil)
+func OfFunc[T any](value T) (zero Value[T]) {
+	// 🤮
+	if reflect.ValueOf(&value).Elem().IsZero() {
+		return
 	}
 
 	return OfOk(value)
