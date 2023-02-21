@@ -42,7 +42,7 @@ func Example() {
 	var foo int
 	fmt.Println(val.Ok(&foo), foo) // true 42
 
-	valStr := optional.Map(val, strconv.Itoa)
+	valStr := optional.Map(strconv.Itoa, val)
 	fmt.Println(valStr) // {42 true}
 
 	val = optional.OfIndex(m, "bar")
@@ -85,13 +85,13 @@ func TestValue_Ok(t *testing.T) {
 }
 
 func TestContains(t *testing.T) {
-	if got := optional.Contains(optional.OfNotOk[string](), ""); got != false {
+	if got := optional.Contains("", optional.OfNotOk[string]()); got != false {
 		t.Errorf("Contains() = %v, want %v", got, false)
 	}
-	if got := optional.Contains(optional.OfOk(""), "foo"); got != false {
+	if got := optional.Contains("foo", optional.OfOk("")); got != false {
 		t.Errorf("Contains() = %v, want %v", got, false)
 	}
-	if got := optional.Contains(optional.OfOk(""), ""); got != true {
+	if got := optional.Contains("", optional.OfOk("")); got != true {
 		t.Errorf("Contains() = %v, want %v", got, true)
 	}
 }
@@ -100,10 +100,10 @@ func TestFlatMap(t *testing.T) {
 	toVal := func(f float64) optional.Value[float64] {
 		return optional.OfOk(f * 2.0)
 	}
-	if got := optional.FlatMap(optional.OfNotOk[float64](), toVal); got != optional.OfNotOk[float64]() {
+	if got := optional.FlatMap(toVal, optional.OfNotOk[float64]()); got != optional.OfNotOk[float64]() {
 		t.Errorf("FlatMap() = %v, want %v", got, optional.OfNotOk[float64]())
 	}
-	if got := optional.FlatMap(optional.OfOk(2.0), toVal); got != optional.OfOk(4.0) {
+	if got := optional.FlatMap(toVal, optional.OfOk(2.0)); got != optional.OfOk(4.0) {
 		t.Errorf("FlatMap() = %v, want %v", got, optional.OfOk(4.0))
 	}
 }
@@ -118,10 +118,10 @@ func TestFlatten(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	if got := optional.Map(optional.OfNotOk[int](), strconv.Itoa); got != optional.OfNotOk[string]() {
+	if got := optional.Map(strconv.Itoa, optional.OfNotOk[int]()); got != optional.OfNotOk[string]() {
 		t.Errorf("Map() = %v, want %v", got, optional.OfNotOk[string]())
 	}
-	if got := optional.Map(optional.OfOk(2), strconv.Itoa); got != optional.OfOk("2") {
+	if got := optional.Map(strconv.Itoa, optional.OfOk(2)); got != optional.OfOk("2") {
 		t.Errorf("Map() = %v, want %v", got, optional.OfOk("2"))
 	}
 }
@@ -163,7 +163,7 @@ func ExampleUnzipWith() {
 	for {
 		strVal, idxVal := optional.UnzipWith(optional.OfOk(str), splitFirstColon)
 		fmt.Print(strVal.MustOk())
-		idxVal = optional.FlatMap(idxVal, func(i int) optional.Value[int] { return optional.Of(i, i >= 0) })
+		idxVal = optional.FlatMap(func(i int) optional.Value[int] { return optional.Of(i, i >= 0) }, idxVal)
 		if !idxVal.IsOk() {
 			break
 		}
@@ -345,18 +345,12 @@ func TestZipWith(t *testing.T) {
 // ExampleOfPointer demonstrates how to dereference a pointer without the risk of a panic due to nil.
 func ExampleOfPointer() {
 	var i *int
-	j := optional.Map(
-		optional.OfPointer(i),
-		func(p *int) int { return *p },
-	).OrZero()
+	j := optional.Map(func(p *int) int { return *p }, optional.OfPointer(i)).OrZero()
 	fmt.Println(j)
 
 	i = new(int)
 	*i++
-	j = optional.Map(
-		optional.OfPointer(i),
-		func(p *int) int { return *p },
-	).OrZero()
+	j = optional.Map(func(p *int) int { return *p }, optional.OfPointer(i)).OrZero()
 	fmt.Println(j)
 	// Output:
 	// 0

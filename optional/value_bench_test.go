@@ -32,15 +32,15 @@ var (
 
 func BenchmarkContains(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		boolResult = Contains(okTrue, true)
+		boolResult = Contains(true, okTrue)
 	}
 }
 
 func BenchmarkFlatMap(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		optBoolResult = FlatMap(okTrue, func(bool) (zero Value[bool]) {
+		optBoolResult = FlatMap(func(bool) (zero Value[bool]) {
 			return
-		})
+		}, okTrue)
 	}
 }
 
@@ -52,9 +52,9 @@ func BenchmarkFlatten(b *testing.B) {
 
 func BenchmarkMap(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		optBoolResult = Map(okTrue, func(bool) (zero bool) {
+		optBoolResult = Map(func(bool) (zero bool) {
 			return
-		})
+		}, okTrue)
 	}
 }
 

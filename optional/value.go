@@ -190,7 +190,7 @@ func (val Value[T]) Unpack() (T, bool) {
 
 // Map returns a Value of the result of f on the underlying value.
 // Returns a not-ok Value if val is not ok.
-func Map[T, T2 any](val Value[T], f func(T) T2) (zero Value[T2]) {
+func Map[T, T2 any](f func(T) T2, val Value[T]) (zero Value[T2]) {
 	return ifThenElseDo(!val.ok, zero, func() Value[T2] {
 		return OfOk(f(val.v))
 	})
@@ -198,7 +198,7 @@ func Map[T, T2 any](val Value[T], f func(T) T2) (zero Value[T2]) {
 
 // FlatMap returns the result of f on the underlying value.
 // Returns a not-ok Value if val is not ok.
-func FlatMap[T, T2 any](val Value[T], f func(T) Value[T2]) (zero Value[T2]) {
+func FlatMap[T, T2 any](f func(T) Value[T2], val Value[T]) (zero Value[T2]) {
 	return ifThenElseDo(!val.ok, zero, func() Value[T2] {
 		return f(val.v)
 	})
@@ -206,7 +206,7 @@ func FlatMap[T, T2 any](val Value[T], f func(T) Value[T2]) (zero Value[T2]) {
 
 // Contains returns whether the underlying value equals v.
 // Returns false if val is not ok.
-func Contains[T comparable](val Value[T], v T) bool {
+func Contains[T comparable](v T, val Value[T]) bool {
 	return val.ok && val.v == v
 }
 
@@ -230,8 +230,16 @@ func UnzipWith[T, T2, T3 any](val Value[T], f func(T) (T2, T3)) (val2 Value[T2],
 
 // Flatten returns the underlying Value of val.
 // Returns a not-ok Value if val is not ok.
-func Flatten[T any](val Value[Value[T]]) (zero Value[T]) {
-	return ifThenElse(val.ok, val.v, zero)
+func Flatten[T any](val Value[Value[T]]) Value[T] {
+	return val.v
+}
+
+func IsOk[T any](val Value[T]) bool {
+	return val.IsOk()
+}
+
+func MustOk[T any](val Value[T]) T {
+	return val.MustOk()
 }
 
 func ifThenElseDo[T any](condition bool, first T, f func() T) T {
