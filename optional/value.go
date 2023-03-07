@@ -242,10 +242,10 @@ func MustOk[T any](val Value[T]) T {
 	return val.MustOk()
 }
 
-func FilterOk[T any](options []Value[T]) []Value[T] {
-	result := make([]Value[T], 0, len(options))
+func FilterOk[T any](opts []Value[T]) []Value[T] {
+	result := make([]Value[T], 0, len(opts))
 
-	for _, option := range options {
+	for _, option := range opts {
 		if option.IsOk() {
 			result = append(result, option)
 		}
@@ -254,27 +254,34 @@ func FilterOk[T any](options []Value[T]) []Value[T] {
 	return result
 }
 
-func ToValues[T any](options []Value[T]) []T {
-	result := make([]T, len(options))
+func ToValues[T any](opts []Value[T]) []T {
+	result := make([]T, len(opts))
 
-	for i, option := range options {
+	for i, option := range opts {
 		result[i] = option.MustOk()
 	}
 
 	return result
 }
 
-func FilterOkValues[T any](options []Value[T]) []T {
-	result := make([]T, 0, len(options))
+func FilterOkValues[T any](opts []Value[T]) []T {
+	result := make([]T, 0, len(opts))
 
-	for _, option := range options {
-		if option, ok := option.Unpack(); ok {
-			result = append(result, option)
+	for _, opt := range opts {
+		if opt, ok := opt.Unpack(); ok {
+			result = append(result, opt)
 		}
 	}
 
 	return result
+}
 
+func Do[T any](f func(T), opts []Value[T]) {
+	for _, opt := range opts {
+		if opt, ok := opt.Unpack(); ok {
+			f(opt)
+		}
+	}
 }
 
 func ifThenElseDo[T any](condition bool, first T, f func() T) T {
