@@ -242,6 +242,41 @@ func MustOk[T any](val Value[T]) T {
 	return val.MustOk()
 }
 
+func FilterOk[T any](options []Value[T]) []Value[T] {
+	result := make([]Value[T], 0, len(options))
+
+	for _, option := range options {
+		if option.IsOk() {
+			result = append(result, option)
+		}
+	}
+
+	return result
+}
+
+func ToValues[T any](options []Value[T]) []T {
+	result := make([]T, len(options))
+
+	for i, option := range options {
+		result[i] = option.MustOk()
+	}
+
+	return result
+}
+
+func FilterOkValues[T any](options []Value[T]) []T {
+	result := make([]T, 0, len(options))
+
+	for _, option := range options {
+		if option, ok := option.Unpack(); ok {
+			result = append(result, option)
+		}
+	}
+
+	return result
+
+}
+
 func ifThenElseDo[T any](condition bool, first T, f func() T) T {
 	if condition {
 		return first
