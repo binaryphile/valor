@@ -278,9 +278,15 @@ func FilterOkValues[T any](opts []Value[T]) []T {
 
 func Do[T any](f func(T), opts []Value[T]) {
 	for _, opt := range opts {
-		if opt, ok := opt.Unpack(); ok {
-			f(opt)
-		}
+		_ = opt.Do(f)
+	}
+}
+
+func DoWith[T any](item T, opts []Value[func(T)]) {
+	for _, opt := range opts {
+		_ = opt.Do(func(f func(T)) {
+			f(item)
+		})
 	}
 }
 
