@@ -186,7 +186,7 @@ func BenchmarkValue_Or(b *testing.B) {
 
 func BenchmarkValue_OrDo(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		boolResult = okTrue.OrDo(func() (zero bool) {
+		boolResult = okTrue.OrTake(func() (zero bool) {
 			return
 		})
 	}
@@ -206,7 +206,7 @@ func BenchmarkValue_SelfOr(b *testing.B) {
 
 func BenchmarkValue_SelfOrDo(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		optBoolResult = okTrue.SelfOrDo(func() (zero Value[bool]) {
+		optBoolResult = okTrue.SelfOrTake(func() (zero Value[bool]) {
 			return
 		})
 	}

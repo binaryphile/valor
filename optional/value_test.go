@@ -46,9 +46,9 @@ func Example() {
 	fmt.Println(valStr) // {42 true}
 
 	val = optional.OfIndex(m, "bar")
-	fmt.Println(val.Or(-1))                        // -1
-	fmt.Println(val.OrZero())                      // 0
-	fmt.Println(val.OrDo(func() int { return 1 })) // 1
+	fmt.Println(val.Or(-1))                          // -1
+	fmt.Println(val.OrZero())                        // 0
+	fmt.Println(val.OrTake(func() int { return 1 })) // 1
 
 	// switch
 	switch val {
@@ -291,17 +291,17 @@ func ExampleValue_OrDo() {
 		return v
 	}
 
-	v := optional.OfIndex(cache, "foo").OrDo(func() string { return load("foo") })
+	v := optional.OfIndex(cache, "foo").OrTake(func() string { return load("foo") })
 	fmt.Println(v)
 	// Output: bar
 }
 
 func TestValue_OrDo(t *testing.T) {
 	rand := rand.NewSource(42)
-	if got := optional.OfNotOk[int64]().OrDo(rand.Int63); got != 3440579354231278675 {
+	if got := optional.OfNotOk[int64]().OrTake(rand.Int63); got != 3440579354231278675 {
 		t.Errorf("OrDo() = %v, want %v", got, 3440579354231278675)
 	}
-	if got := optional.OfOk(int64(1)).OrDo(rand.Int63); got != 1 {
+	if got := optional.OfOk(int64(1)).OrTake(rand.Int63); got != 1 {
 		t.Errorf("OrDo() = %v, want %v", got, 1)
 	}
 }

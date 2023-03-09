@@ -123,13 +123,13 @@ func (val Value[T]) OrZero() T {
 	return val.v
 }
 
-// OrDo returns the underlying value if ok, or the result of f if not ok.
-func (val Value[T]) OrDo(f func() T) T {
+// OrTake returns the underlying value if ok, or the result of f if not ok.
+func (val Value[T]) OrTake(f func() T) T {
 	return ifThenElseDo(val.ok, val.v, f)
 }
 
-// SelfOrDo returns the optional value if ok, or the result of f if not ok.
-func (val Value[T]) SelfOrDo(f func() Value[T]) Value[T] {
+// SelfOrTake returns the optional value if ok, or the result of f if not ok.
+func (val Value[T]) SelfOrTake(f func() Value[T]) Value[T] {
 	return ifThenElseDo(val.ok, val, f)
 }
 
