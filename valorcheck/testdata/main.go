@@ -1,4 +1,4 @@
-// Copyright 2022 phelmkamp. All rights reserved.
+// Copyright 2022 binaryphile. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
@@ -7,9 +7,9 @@ package main
 import (
 	"strings"
 
-	"github.com/phelmkamp/valor/enum"
-	"github.com/phelmkamp/valor/optional"
-	"github.com/phelmkamp/valor/result"
+	"github.com/binaryphile/valor/enum"
+	"github.com/binaryphile/valor/optional"
+	"github.com/binaryphile/valor/result"
 )
 
 var (

@@ -1,4 +1,4 @@
-// Copyright 2022 phelmkamp. All rights reserved.
+// Copyright 2022 binaryphile. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
@@ -14,10 +14,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/phelmkamp/valor/optional"
-	"github.com/phelmkamp/valor/result"
-	"github.com/phelmkamp/valor/tuple/two"
-	"github.com/phelmkamp/valor/tuple/unit"
+	"github.com/binaryphile/valor/optional"
+	"github.com/binaryphile/valor/result"
+	"github.com/binaryphile/valor/tuple/two"
+	"github.com/binaryphile/valor/tuple/unit"
 )
 
 // type checks

@@ -7,7 +7,7 @@ Linter to check that access to an optional value is guarded against the case whe
 ## Installation
 
 ```bash
-go install github.com/phelmkamp/valor/valorcheck@latest
+go install github.com/binaryphile/valor/valorcheck@latest
 ```
 
 ## Usage
@@ -38,7 +38,7 @@ Flags:
 ## Output
 
 ```bash
-/home/phelmkamp/documents/valor/valorcheck/testdata/main.go:15:2: call to MustOk not guarded by IsOk might panic
-/home/phelmkamp/documents/valor/valorcheck/testdata/main.go:16:7: call to MustOk not guarded by IsOk might panic
-/home/phelmkamp/documents/valor/valorcheck/testdata/main.go:17:2: result of Ok is not checked
+/home/binaryphile/documents/valor/valorcheck/testdata/main.go:15:2: call to MustOk not guarded by IsOk might panic
+/home/binaryphile/documents/valor/valorcheck/testdata/main.go:16:7: call to MustOk not guarded by IsOk might panic
+/home/binaryphile/documents/valor/valorcheck/testdata/main.go:17:2: result of Ok is not checked
 ```

@@ -1,4 +1,4 @@
-// Copyright 2022 phelmkamp. All rights reserved.
+// Copyright 2022 binaryphile. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
@@ -8,7 +8,7 @@ import (
 	"go/ast"
 	"go/types"
 
-	"github.com/phelmkamp/valor/tuple/unit"
+	"github.com/binaryphile/valor/tuple/unit"
 	"golang.org/x/tools/go/analysis"
 )
 
@@ -115,7 +115,7 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	}
 
 	switch xType.Obj().Pkg().Path() {
-	case "github.com/phelmkamp/valor/optional", "github.com/phelmkamp/valor/enum":
+	case "github.com/binaryphile/valor/optional", "github.com/binaryphile/valor/enum":
 		v.checkOpt(sel, xVar)
 	}
 

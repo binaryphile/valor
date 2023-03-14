@@ -1,4 +1,4 @@
-// Copyright 2022 phelmkamp. All rights reserved.
+// Copyright 2022 binaryphile. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/phelmkamp/valor/funcs"
-	"github.com/phelmkamp/valor/tuple/four"
+	"github.com/binaryphile/valor/funcs"
+	"github.com/binaryphile/valor/tuple/four"
 )
 
 func get() (string, int, float32, []int, bool) {
