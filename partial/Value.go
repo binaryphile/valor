@@ -6,8 +6,6 @@ import (
 )
 
 type (
-	Type = string
-
 	Value[T ifs.PartialAdapter] struct {
 		v         T
 		fieldMask bitset.BitSet

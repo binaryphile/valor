@@ -1,16 +1,18 @@
 package ifs
 
+import "github.com/binaryphile/valor/enum"
+
 type (
 	FieldIndex = uint
 
-	Type = string
+	Type enum.Enum[string]
 
 	Getter interface {
 		Get(FieldIndex) (any, bool)
 	}
 
 	Setter[T any] interface {
-		Set(FieldIndex, any) (Partial[T], error)
+		Set(FieldIndex, any) (T, error)
 	}
 
 	Completer[T any] interface {

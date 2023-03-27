@@ -69,9 +69,9 @@ func (e Enum[T]) ValueOf(v T) Enum[T] {
 
 // String returns e formatted as a string.
 func (e Enum[T]) String() string {
-	val := optional.Map(e.Value, func(v T) string {
+	val := optional.Map(func(v T) string {
 		return e.members[v].name
-	})
+	}, e.Value)
 	return fmt.Sprint(val)
 }
 
