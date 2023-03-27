@@ -1,8 +1,8 @@
 # valor
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/binaryphile/valor.svg)](https://pkg.go.dev/github.com/binaryphile/valor)
-[![Go Report Card](https://goreportcard.com/badge/github.com/binaryphile/valor)](https://goreportcard.com/report/github.com/binaryphile/valor)
-[![codecov](https://codecov.io/gh/binaryphile/valor/branch/main/graph/badge.svg?token=GH8IYR78VD)](https://codecov.io/gh/binaryphile/valor)
+[![Go Reference](https://pkg.go.dev/badge/github.com/phelmkamp/valor.svg)](https://pkg.go.dev/github.com/phelmkamp/valor)
+[![Go Report Card](https://goreportcard.com/badge/github.com/phelmkamp/valor)](https://goreportcard.com/report/github.com/phelmkamp/valor)
+[![codecov](https://codecov.io/gh/phelmkamp/valor/branch/main/graph/badge.svg?token=GH8IYR78VD)](https://codecov.io/gh/phelmkamp/valor)
 
 This module provides option and result types that optionally contain a value; hence the name valor, short for "value or".
 
@@ -13,14 +13,14 @@ Instead, the goal is to codify the ["comma ok"](https://blog.toshima.ru/2019/07/
 ## Installation
 
 ```bash
-go get github.com/binaryphile/valor
+go get github.com/phelmkamp/valor
 ```
 
 ## Types
 
 ### Value
 
-[`optional.Value`](https://pkg.go.dev/github.com/binaryphile/valor/optional) is modeled after the "comma ok" idiom.
+[`optional.Value`](https://pkg.go.dev/github.com/phelmkamp/valor/optional) is modeled after the "comma ok" idiom.
 It contains a value (ok) or nothing (not ok).
 
 ```go
@@ -42,7 +42,7 @@ fmt.Println(val.OrElse(func() int { return 1 })) // 1
 
 ### Result
 
-[`result.Result`](https://pkg.go.dev/github.com/binaryphile/valor/result) contains either a value or an error.
+[`result.Result`](https://pkg.go.dev/github.com/phelmkamp/valor/result) contains either a value or an error.
 
 ```go
 // traditional
@@ -94,9 +94,9 @@ if res := result.Of(mid(true)); res.IsError() {
 
 ### Tuples
 
-[`unit.Type`](https://pkg.go.dev/github.com/binaryphile/valor/tuple/unit), [`singleton.Set`](https://pkg.go.dev/github.com/binaryphile/valor/tuple/singleton),
-[`two.Tuple`](https://pkg.go.dev/github.com/binaryphile/valor/tuple/two), [`three.Tuple`](https://pkg.go.dev/github.com/binaryphile/valor/tuple/three), and
-[`four.Tuple`](https://pkg.go.dev/github.com/binaryphile/valor/tuple/four) contain zero through four values respectively.
+[`unit.Type`](https://pkg.go.dev/github.com/phelmkamp/valor/tuple/unit), [`singleton.Set`](https://pkg.go.dev/github.com/phelmkamp/valor/tuple/singleton),
+[`two.Tuple`](https://pkg.go.dev/github.com/phelmkamp/valor/tuple/two), [`three.Tuple`](https://pkg.go.dev/github.com/phelmkamp/valor/tuple/three), and
+[`four.Tuple`](https://pkg.go.dev/github.com/phelmkamp/valor/tuple/four) contain zero through four values respectively.
 Among other things, they enable `Value` and `Result` to contain a variable number of values.
 
 {% raw %}
@@ -111,7 +111,7 @@ fmt.Println(val) // {{a 1} true}
 
 ### Enum
 
-[`enum.Enum`](https://pkg.go.dev/github.com/binaryphile/valor/enum) is an enumerated type.
+[`enum.Enum`](https://pkg.go.dev/github.com/phelmkamp/valor/enum) is an enumerated type.
 It's initialized with a set of allowed values and then each "copy" optionally contains a currently selected value.
 
 ```go
@@ -176,4 +176,4 @@ Instead, functionality will be deprecated as needed with plans to remove in v1.
 
 ## Linter
 
-[valorcheck](https://github.com/binaryphile/valor/tree/main/valorcheck#readme) is a linter to check that access to an optional value is guarded against the case where the value is not present.
+[valorcheck](https://github.com/phelmkamp/valor/tree/main/valorcheck#readme) is a linter to check that access to an optional value is guarded against the case where the value is not present.

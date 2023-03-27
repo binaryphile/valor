@@ -1,4 +1,4 @@
-// Copyright 2022 binaryphile. All rights reserved.
+// Copyright 2022 phelmkamp. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
@@ -6,7 +6,7 @@ package value
 
 import (
 	"fmt"
-	"github.com/binaryphile/valor/optional"
+	"github.com/phelmkamp/valor/optional"
 )
 
 // Value either contains a value (ok) or nothing (not ok).

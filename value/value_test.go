@@ -1,4 +1,4 @@
-// Copyright 2022 binaryphile. All rights reserved.
+// Copyright 2022 phelmkamp. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 
@@ -6,10 +6,10 @@ package value_test
 
 import (
 	"fmt"
-	"github.com/binaryphile/valor/tuple/four"
-	"github.com/binaryphile/valor/tuple/singleton"
-	"github.com/binaryphile/valor/tuple/two"
-	"github.com/binaryphile/valor/value"
+	"github.com/phelmkamp/valor/tuple/four"
+	"github.com/phelmkamp/valor/tuple/singleton"
+	"github.com/phelmkamp/valor/tuple/two"
+	"github.com/phelmkamp/valor/value"
 	"math/rand"
 	"strconv"
 	"strings"

@@ -2,8 +2,8 @@ package enum_test
 
 import (
 	"fmt"
-	"github.com/binaryphile/valor/enum"
-	"github.com/binaryphile/valor/tuple/two"
+	"github.com/phelmkamp/valor/enum"
+	"github.com/phelmkamp/valor/tuple/two"
 	"reflect"
 	"testing"
 	"time"
