@@ -18,11 +18,8 @@ type Value[T any] struct {
 // Of creates a Value of v if ok is true.
 // This aids interoperability with return values
 // that follow the "comma ok" idiom.
-func Of[T any](v T, ok bool) Value[T] {
-	if ok {
-		return OfOk(v)
-	}
-	return OfNotOk[T]()
+func Of[T any](v T, ok bool) (zero Value[T]) {
+	return ifThenElse(ok, Value[T]{v: v, ok: ok}, zero)
 }
 
 // OfOk creates an ok Value of v.
@@ -33,19 +30,15 @@ func OfOk[T any](v T) Value[T] {
 // OfPointer creates a Value of the pointer p.
 // Returns a not-ok Value if p is nil.
 func OfPointer[T any](p *T) Value[*T] {
-	if p == nil {
-		return OfNotOk[*T]()
-	}
-	return OfOk(p)
+	return Of(p, p != nil)
 }
 
 // OfPointee creates a Value of the target of pointer p.
 // Returns a not-ok Value if p is nil.
-func OfPointee[T any](p *T) Value[T] {
-	if p == nil {
-		return OfNotOk[T]()
-	}
-	return OfOk(*p)
+func OfPointee[T any](p *T) (zero Value[T]) {
+	return ifThenElseDo(p == nil, zero, func() Value[T] {
+		return OfOk(*p)
+	})
 }
 
 // OfAssert performs the type assertion x.(T) and creates a Value of the result.
@@ -74,29 +67,21 @@ func OfReceive[T any](ch <-chan T) Value[T] {
 
 // OfNotOk creates a Value that is not ok.
 // This aids in comparisons, enabling the use of Value in switch statements.
-func OfNotOk[T any]() Value[T] {
-	return Value[T]{}
+func OfNotOk[T any]() (zero Value[T]) {
+	return
 }
 
 // OfNonZero creates an ok Value if nonzero otherwise not ok.
 func OfNonZero[T comparable](value T) (zero Value[T]) {
-	if value != zero.v {
-		return OfOk(value)
-	}
-
-	return
+	return Of(value, value != zero.v)
 }
 
 // OfFunc creates an ok Value if value is non-nil otherwise not ok.
 // It's more efficient to use a non-reflection-based method if you need performance.
-// E.g. #Of(myFunc, myFunc != nil)
-func OfFunc[T any](value T) (zero Value[T]) {
+// E.g. Of(myFunc, myFunc != nil)
+func OfFunc[T any](value T) Value[T] {
 	// 🤮
-	if reflect.ValueOf(&value).Elem().IsZero() {
-		return
-	}
-
-	return OfOk(value)
+	return Of(value, !reflect.ValueOf(&value).Elem().IsZero())
 }
 
 // IsOk returns whether v contains a value.
@@ -107,29 +92,30 @@ func (val Value[T]) IsOk() bool {
 // Ok sets dst to the underlying value if ok.
 // Returns true if ok, false if not ok.
 func (val Value[T]) Ok(dst *T) bool {
-	if !val.IsOk() {
-		return false
+	if val.ok {
+		*dst = val.v
 	}
-	*dst = val.v
-	return true
+
+	return val.ok
 }
 
 // MustOk is like Ok but panics if not ok.
 // This simplifies access to the underlying value
 // in cases where it's known that val is ok.
 func (val Value[T]) MustOk() T {
-	if !val.IsOk() {
+	return ifThenElseDo(val.ok, val.v, func() T {
 		panic("Value.MustOk(): not ok")
-	}
-	return val.v
+	})
 }
 
 // Or returns the underlying value if ok, or def if not ok.
 func (val Value[T]) Or(def T) T {
-	if val.IsOk() {
-		return val.v
-	}
-	return def
+	return ifThenElse(val.ok, val.v, def)
+}
+
+// SelfOr returns the optional value if ok, or def if not ok.
+func (val Value[T]) SelfOr(def Value[T]) Value[T] {
+	return ifThenElse(val.ok, val, def)
 }
 
 // OrZero returns the underlying value if ok, or the zero value if not ok.
@@ -137,30 +123,14 @@ func (val Value[T]) OrZero() T {
 	return val.v
 }
 
-// OrElse returns the underlying value if ok, or the result of f if not ok.
-func (val Value[T]) OrElse(f func() T) T {
-	if val.IsOk() {
-		return val.v
-	}
-	return f()
+// OrDo returns the underlying value if ok, or the result of f if not ok.
+func (val Value[T]) OrDo(f func() T) T {
+	return ifThenElseDo(val.ok, val.v, f)
 }
 
-// SelfOrElse returns the optional value if ok, or the result of f if not ok.
-func (val Value[T]) SelfOrElse(f func() Value[T]) Value[T] {
-	if val.IsOk() {
-		return val
-	}
-
-	return f()
-}
-
-// SelfOr returns the optional value if ok, or def if not ok.
-func (val Value[T]) SelfOr(def Value[T]) Value[T] {
-	if val.IsOk() {
-		return val
-	}
-
-	return def
+// SelfOrDo returns the optional value if ok, or the result of f if not ok.
+func (val Value[T]) SelfOrDo(f func() Value[T]) Value[T] {
+	return ifThenElseDo(val.ok, val, f)
 }
 
 // OfOk creates an ok Value of the underlying value.
@@ -172,27 +142,26 @@ func (val Value[T]) OfOk() Value[T] {
 // Do calls f with the underlying value if ok.
 // Does nothing if not ok.
 func (val Value[T]) Do(f func(T)) Value[T] {
-	if val.IsOk() {
+	if val.ok {
 		f(val.v)
 	}
+
 	return val
 }
 
 // Filter returns val if f returns true for the underlying value.
 // Otherwise returns a not-ok Value.
-func (val Value[T]) Filter(f func(T) bool) Value[T] {
-	if val.IsOk() && f(val.v) {
-		return val
-	}
-	return OfNotOk[T]()
+func (val Value[T]) Filter(f func(T) bool) (zero Value[T]) {
+	return ifThenElse(val.ok && f(val.v), val, zero)
 }
 
 // MarshalJSON encodes val as JSON.
 // Marshals the underlying value if ok, the literal null if not ok.
 func (val Value[T]) MarshalJSON() ([]byte, error) {
-	if !val.IsOk() {
+	if !val.ok {
 		return []byte("null"), nil
 	}
+
 	return json.Marshal(val.v)
 }
 
@@ -221,41 +190,38 @@ func (val Value[T]) Unpack() (T, bool) {
 
 // Map returns a Value of the result of f on the underlying value.
 // Returns a not-ok Value if val is not ok.
-func Map[T, T2 any](val Value[T], f func(T) T2) Value[T2] {
-	if !val.IsOk() {
-		return OfNotOk[T2]()
-	}
-	return OfOk(f(val.v))
+func Map[T, T2 any](val Value[T], f func(T) T2) (zero Value[T2]) {
+	return ifThenElseDo(!val.ok, zero, func() Value[T2] {
+		return OfOk(f(val.v))
+	})
 }
 
 // FlatMap returns the result of f on the underlying value.
 // Returns a not-ok Value if val is not ok.
-func FlatMap[T, T2 any](val Value[T], f func(T) Value[T2]) Value[T2] {
-	if !val.IsOk() {
-		return OfNotOk[T2]()
-	}
-	return f(val.v)
+func FlatMap[T, T2 any](val Value[T], f func(T) Value[T2]) (zero Value[T2]) {
+	return ifThenElseDo(!val.ok, zero, func() Value[T2] {
+		return f(val.v)
+	})
 }
 
 // Contains returns whether the underlying value equals v.
 // Returns false if val is not ok.
 func Contains[T comparable](val Value[T], v T) bool {
-	return val.IsOk() && val.v == v
+	return val.ok && val.v == v
 }
 
 // ZipWith calls f with the underlying values of val and val2 and returns a Value of the result.
 // Returns a not-ok Value if either val or val2 is not ok.
-func ZipWith[T, T2, T3 any](val Value[T], val2 Value[T2], f func(T, T2) T3) Value[T3] {
-	if !val.IsOk() || !val2.IsOk() {
-		return OfNotOk[T3]()
-	}
-	return OfOk(f(val.v, val2.v))
+func ZipWith[T, T2, T3 any](val Value[T], val2 Value[T2], f func(T, T2) T3) (zero Value[T3]) {
+	return ifThenElseDo(!(val.ok && val2.ok), zero, func() Value[T3] {
+		return OfOk(f(val.v, val2.v))
+	})
 }
 
 // UnzipWith calls f with the underlying value of val and returns Values of the result.
 // Does nothing and returns not-ok Values if val is not ok.
 func UnzipWith[T, T2, T3 any](val Value[T], f func(T) (T2, T3)) (val2 Value[T2], val3 Value[T3]) {
-	if val.IsOk() {
+	if val.ok {
 		val2.v, val3.v = f(val.v)
 		val2.ok, val3.ok = true, true
 	}
@@ -264,9 +230,22 @@ func UnzipWith[T, T2, T3 any](val Value[T], f func(T) (T2, T3)) (val2 Value[T2],
 
 // Flatten returns the underlying Value of val.
 // Returns a not-ok Value if val is not ok.
-func Flatten[T any](val Value[Value[T]]) Value[T] {
-	if !val.IsOk() {
-		return OfNotOk[T]()
+func Flatten[T any](val Value[Value[T]]) (zero Value[T]) {
+	return ifThenElse(val.ok, val.v, zero)
+}
+
+func ifThenElseDo[T any](condition bool, first T, f func() T) T {
+	if condition {
+		return first
 	}
-	return val.v
+
+	return f()
+}
+
+func ifThenElse[T any](condition bool, first, second T) T {
+	if condition {
+		return first
+	}
+
+	return second
 }

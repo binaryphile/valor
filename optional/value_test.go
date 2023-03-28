@@ -46,9 +46,9 @@ func Example() {
 	fmt.Println(valStr) // {42 true}
 
 	val = optional.OfIndex(m, "bar")
-	fmt.Println(val.Or(-1))                          // -1
-	fmt.Println(val.OrZero())                        // 0
-	fmt.Println(val.OrElse(func() int { return 1 })) // 1
+	fmt.Println(val.Or(-1))                        // -1
+	fmt.Println(val.OrZero())                      // 0
+	fmt.Println(val.OrDo(func() int { return 1 })) // 1
 
 	// switch
 	switch val {
@@ -281,8 +281,8 @@ func TestValue_Or(t *testing.T) {
 	}
 }
 
-// ExampleValue_OrElse demonstrates that OrElse can be used to work with a cache.
-func ExampleValue_OrElse() {
+// ExampleValue_OrDo demonstrates that OrDo can be used to work with a cache.
+func ExampleValue_OrDo() {
 	cache := make(map[string]string)
 	load := func(k string) string {
 		// expensive call to load value goes here
@@ -291,18 +291,18 @@ func ExampleValue_OrElse() {
 		return v
 	}
 
-	v := optional.OfIndex(cache, "foo").OrElse(func() string { return load("foo") })
+	v := optional.OfIndex(cache, "foo").OrDo(func() string { return load("foo") })
 	fmt.Println(v)
 	// Output: bar
 }
 
-func TestValue_OrElse(t *testing.T) {
+func TestValue_OrDo(t *testing.T) {
 	rand := rand.NewSource(42)
-	if got := optional.OfNotOk[int64]().OrElse(rand.Int63); got != 3440579354231278675 {
-		t.Errorf("OrElse() = %v, want %v", got, 3440579354231278675)
+	if got := optional.OfNotOk[int64]().OrDo(rand.Int63); got != 3440579354231278675 {
+		t.Errorf("OrDo() = %v, want %v", got, 3440579354231278675)
 	}
-	if got := optional.OfOk(int64(1)).OrElse(rand.Int63); got != 1 {
-		t.Errorf("OrElse() = %v, want %v", got, 1)
+	if got := optional.OfOk(int64(1)).OrDo(rand.Int63); got != 1 {
+		t.Errorf("OrDo() = %v, want %v", got, 1)
 	}
 }
 

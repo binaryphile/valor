@@ -14,7 +14,8 @@ import (
 // Set contains at most one element.
 //
 // It works like a map. Use the key unit.Unit to access the element:
-//  v, ok := s[unit.Unit]
+//
+//	v, ok := s[unit.Unit]
 type Set[E any] map[unit.Type]E
 
 // String returns the Set formatted as a string.
