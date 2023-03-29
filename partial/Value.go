@@ -7,31 +7,33 @@ import (
 
 type (
 	Value[T ifs.PartialAdapter] struct {
-		v         T
-		fieldMask bitset.BitSet
+		fieldMask *bitset.BitSet
+		value     T
 	}
 )
 
-func New[T ifs.PartialAdapter](value T, fieldMask bitset.BitSet) Value[T] {
+func Of[T ifs.PartialAdapter](value T, fieldMask *bitset.BitSet) Value[T] {
 	return Value[T]{
-		v:         value,
 		fieldMask: fieldMask,
+		value:     value,
 	}
 }
 
-func (x Value[T]) Get(index ifs.FieldIndex) (_ any, ok bool) {
+func (x Value[T]) Get(index FieldIndex) (_ any, _ bool) {
 	if !x.fieldMask.Test(index) {
 		return
 	}
 
-	return x.v.Value(index), true
+	return x.value.Get(index)
 }
 
-func (x Value[T]) Set(index ifs.FieldIndex, value any) (_ Value[T], err error) {
-	err = x.v.Set(index, value)
+func (x Value[T]) Set(index FieldIndex, value any) (_ Value[T], err error) {
+	err = x.value.Set(index, value)
 	if err != nil {
 		return
 	}
+
+	x.fieldMask = x.fieldMask.Clone()
 
 	x.fieldMask.Set(index)
 
