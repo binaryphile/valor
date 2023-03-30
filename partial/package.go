@@ -1,9 +1,9 @@
 package partial
 
 import (
-	"github.com/binaryphile/valor/partial/ifs"
+	"github.com/binaryphile/valor/enum"
 )
 
 type (
-	FieldIndex = ifs.FieldIndex
+	EnumFieldPath = enum.Enum[string]
 )
