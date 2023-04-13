@@ -15,11 +15,11 @@ type (
 	}
 )
 
-func NewPartial[T any](value T, fieldMask *bitset.BitSet, fieldNames []string) Partial[T] {
+func NewPartial[T any, S ~string](value T, fieldMask *bitset.BitSet, fieldNames []S) Partial[T] {
 	paths := make([]string, 0, len(fieldNames))
 
 	for _, name := range fieldNames {
-		paths = append(paths, "/"+name)
+		paths = append(paths, "/"+string(name))
 	}
 
 	return Partial[T]{
