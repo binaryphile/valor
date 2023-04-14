@@ -37,10 +37,10 @@ func Of[T comparable](pairs ...two.Tuple[string, T]) Enum[T] {
 }
 
 // OfString creates an Enum of the given string values.
-func OfString(vals ...string) Enum[string] {
-	e := Enum[string]{members: make(map[string]metadata)}
+func OfString[S ~string](vals ...S) Enum[S] {
+	e := Enum[S]{members: make(map[S]metadata)}
 	for i, v := range vals {
-		e.members[v] = metadata{i: i, name: v}
+		e.members[v] = metadata{i: i, name: string(v)}
 	}
 	return e
 }
@@ -80,6 +80,15 @@ func (e Enum[T]) Values() []T {
 	s := make([]T, len(e.members))
 	for v, m := range e.members {
 		s[m.i] = v
+	}
+	return s
+}
+
+// Names returns the allowed names.
+func (e Enum[T]) Names() []string {
+	s := make([]string, len(e.members))
+	for _, m := range e.members {
+		s[m.i] = m.name
 	}
 	return s
 }
