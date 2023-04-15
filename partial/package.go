@@ -5,5 +5,5 @@ import (
 )
 
 type (
-	EnumFieldPath = enum.Enum[string]
+	EnumFieldPath = enum.Member[string]
 )
