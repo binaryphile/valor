@@ -2,8 +2,8 @@ package enum
 
 import (
 	"encoding"
+	"errors"
 	"fmt"
-	"github.com/binaryphile/valor/optional"
 	"github.com/binaryphile/valor/tuple/two"
 )
 
@@ -11,7 +11,7 @@ import (
 //
 // It wraps an optional.Value that is only ok if it's a member of the allowed values.
 type Enum[T comparable] struct {
-	optional.Value[T]
+	v       T
 	members map[T]metadata // carry allowed values for validation
 }
 
@@ -60,19 +60,33 @@ func OfText[T ComparableText](vals ...T) Enum[T] {
 }
 
 // ValueOf returns an Enum that wraps v if v is a member of the allowed values.
-// Returns a not-ok Enum otherwise.
-func (e Enum[T]) ValueOf(v T) Enum[T] {
-	_, ok := e.members[v]
-	e.Value = optional.Of(v, ok)
+// Returns not ok otherwise.
+func (e Enum[T]) ValueOf(v T) (_ Enum[T], ok bool) {
+	if _, ok = e.members[v]; !ok {
+		return
+	}
+	e.v = v
+	return e, true
+}
+
+// MustOf returns an Enum that wraps v if v is a member of the allowed values.
+// Panics otherwise.
+func (e Enum[T]) MustOf(v T) Enum[T] {
+	if _, ok := e.members[v]; !ok {
+		panic("value not in enum")
+	}
+	e.v = v
 	return e
 }
 
 // String returns e formatted as a string.
 func (e Enum[T]) String() string {
-	val := optional.Map(func(v T) string {
-		return e.members[v].name
-	}, e.Value)
-	return fmt.Sprint(val)
+	return fmt.Sprint(e.members[e.v])
+}
+
+// Value returns the stored value.
+func (e Enum[T]) Value() T {
+	return e.v
 }
 
 // Values returns the allowed values.
@@ -96,23 +110,17 @@ func (e Enum[T]) Names() []string {
 // MarshalText returns the name of the current member.
 // Returns nil if e is not ok.
 func (e Enum[T]) MarshalText() (text []byte, err error) {
-	var v T
-	if !e.Ok(&v) {
-		return nil, nil
-	}
-	return []byte(e.members[v].name), nil
+	return []byte(e.members[e.v].name), nil
 }
 
 // UnmarshalText sets e to wrap the member with the given name.
-// Sets e to not-ok if text is not the name of a valid member.
-func (e *Enum[T]) UnmarshalText(text []byte) error {
+func (e *Enum[T]) UnmarshalText(text []byte) (err error) {
 	s := string(text)
 	for v, m := range e.members {
 		if m.name == s {
-			e.Value = optional.OfOk(v)
-			return nil
+			e.v = v
+			return
 		}
 	}
-	e.Value = optional.OfNotOk[T]()
-	return nil
+	return errors.New("value not in enum")
 }
