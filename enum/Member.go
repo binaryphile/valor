@@ -1,7 +1,7 @@
 package enum
 
 type (
-	Member[T ~string] struct {
+	Member[T any] struct {
 		Enum[T]
 		v string
 	}
