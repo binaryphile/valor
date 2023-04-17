@@ -1,12 +1,13 @@
 package enum
 
 import (
+	"fmt"
 	"github.com/binaryphile/valor/optional"
 )
 
 type (
-	Enum[T any] struct {
-		members map[string]int
+	Enum[T fmt.Stringer, A any] struct {
+		members map[string]Member[T, A]
 	}
 )
 
@@ -14,51 +15,56 @@ type (
 // It also returns a function for generating members.
 // The function is intended for use by the enum creator and
 // should be discarded or not exported in order to seal the enum.
-func Of[T any](names ...string) (Enum[T], func(string) Member[T]) {
-	members := make(map[string]int)
+func Of[T fmt.Stringer, A any](items ...T) (Enum[T, A], func(T) Member[T, A]) {
+	members := make(map[string]Member[T, A])
 
-	for i, item := range names {
-		members[item] = i
+	for i, item := range items {
+		name := item.String()
+
+		members[name] = Member[T, A]{
+			v:     item,
+			place: i,
+			name:  name,
+		}
 	}
 
-	e := Enum[T]{
+	e := Enum[T, A]{
 		members: members,
 	}
 
-	return e, func(name string) Member[T] {
-		members[name] = len(members)
+	return e, func(item T) Member[T, A] {
+		name := item.String()
 
-		return Member[T]{
-			Enum: e,
-			v:    name,
+		member := Member[T, A]{
+			v:     item,
+			Enum:  e,
+			name:  name,
+			place: len(members),
 		}
+
+		members[name] = member
+
+		return member
 	}
 }
 
-func (x Enum[T]) Includes(name string) bool {
+func (x Enum[_, _]) Includes(name string) bool {
 	_, ok := x.members[name]
 
 	return ok
 }
 
-func (x Enum[T]) Names() []string {
-	items := make([]string, len(x.members))
+func (x Enum[_, _]) Names() []string {
+	names := make([]string, len(x.members))
 
 	// TODO: make length safe in case of repeats messing with it
-	for item, i := range x.members {
-		items[i] = item
+	for _, member := range x.members {
+		names[member.place] = member.name
 	}
 
-	return items
+	return names
 }
 
-func (x Enum[T]) Member(name string) optional.Value[Member[T]] {
-	if _, ok := x.members[name]; ok {
-		return optional.OfOk(Member[T]{
-			Enum: x,
-			v:    name,
-		})
-	}
-
-	return optional.OfNotOk[Member[T]]()
+func (x Enum[T, A]) Member(name string) optional.Value[Member[T, A]] {
+	return optional.OfIndex(x.members, name)
 }
