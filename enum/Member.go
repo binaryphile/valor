@@ -1,26 +1,21 @@
 package enum
 
-import (
-	"fmt"
-)
-
 type (
-	Member[T fmt.Stringer, A any] struct {
+	Member[T ~string, A any] struct {
 		Enum[T, A]
-		v     T
-		name  string
 		place int
+		v     T
 	}
 )
 
 func (x Member[_, _]) String() string {
-	return x.name
+	return string(x.v)
 }
 
 func (x Member[_, _]) Name() string {
-	return x.name
+	return string(x.v)
 }
 
 func (x Member[T, A]) Is(other Member[T, A]) bool {
-	return x.name == other.name
+	return x.v == other.v
 }
