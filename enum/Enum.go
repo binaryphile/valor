@@ -17,26 +17,27 @@ type (
 func Of[T ~string, A any](items ...T) (Enum[T, A], func(T) Member[T, A]) {
 	members := make(map[string]Member[T, A])
 
+	enum := Enum[T, A]{
+		members: members,
+	}
+
 	for i, item := range items {
 		name := string(item)
 
 		members[name] = Member[T, A]{
-			v:     item,
+			enum:  enum,
 			place: i,
+			value: item,
 		}
 	}
 
-	e := Enum[T, A]{
-		members: members,
-	}
-
-	return e, func(item T) Member[T, A] {
+	return enum, func(item T) Member[T, A] {
 		name := string(item)
 
 		member := Member[T, A]{
-			v:     item,
-			Enum:  e,
+			enum:  enum,
 			place: len(members),
+			value: item,
 		}
 
 		members[name] = member
@@ -56,7 +57,7 @@ func (x Enum[_, _]) Names() []string {
 
 	// TODO: make length safe in case of repeats messing with it
 	for _, member := range x.members {
-		names[member.place] = string(member.v)
+		names[member.place] = string(member.value)
 	}
 
 	return names
