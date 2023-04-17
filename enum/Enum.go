@@ -5,18 +5,25 @@ import (
 )
 
 type (
-	Enum[T ~string] map[string]int
+	Enum[T any] map[string]int
 )
 
 // Of creates an Enum of the given string values.
-func Of[T ~string](items ...T) Enum[T] {
+func Of[T any](items ...string) (Enum[T], func(string) Member[T]) {
 	members := make(Enum[T])
 
 	for i, item := range items {
-		members[string(item)] = i
+		members[item] = i
 	}
 
-	return members
+	return members, func(item string) Member[T] {
+		members[item] = len(members)
+
+		return Member[T]{
+			Enum: members,
+			v:    item,
+		}
+	}
 }
 
 func (x Enum[T]) Includes(name string) bool {
@@ -44,15 +51,4 @@ func (x Enum[T]) Member(name string) optional.Value[Member[T]] {
 	}
 
 	return optional.OfNotOk[Member[T]]()
-}
-
-func (x Enum[T]) NewMember(item T) Member[T] {
-	name := string(item)
-
-	x[name] = len(x)
-
-	return Member[T]{
-		Enum: x,
-		v:    name,
-	}
 }
