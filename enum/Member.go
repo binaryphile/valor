@@ -21,6 +21,6 @@ func (x Member[_, _]) Name() string {
 	return x.name
 }
 
-func (x Member[_, _]) Is(other Member[_, _]) bool {
+func (x Member[T, A]) Is(other Member[T, A]) bool {
 	return x.name == other.name
 }
