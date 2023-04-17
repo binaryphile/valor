@@ -2,20 +2,28 @@ package enum
 
 type (
 	Member[T ~string, A any] struct {
-		Enum[T, A]
+		enum  Enum[T, A]
 		place int
-		v     T
+		value T
 	}
 )
 
 func (x Member[_, _]) String() string {
-	return string(x.v)
+	return string(x.value)
+}
+
+func (x Member[_, _]) Error() string {
+	return string(x.value)
 }
 
 func (x Member[_, _]) Name() string {
-	return string(x.v)
+	return string(x.value)
 }
 
 func (x Member[T, A]) Is(other Member[T, A]) bool {
-	return x.v == other.v
+	return x.value == other.value
+}
+
+func (x Member[T, A]) Enum() Enum[T, A] {
+	return x.enum
 }
