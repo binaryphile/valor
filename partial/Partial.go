@@ -61,7 +61,7 @@ func (x Partial[T]) activePaths() []string {
 
 	for i, fieldName := range x.FieldNames {
 		if x.FieldMask.Test(uint(i)) {
-			paths = append(paths, "/"+fieldName)
+			paths = append(paths, fieldName)
 		}
 	}
 
