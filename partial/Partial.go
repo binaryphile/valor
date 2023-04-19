@@ -9,37 +9,29 @@ import (
 
 type (
 	Partial[T any] struct {
-		fieldMask *bitset.BitSet
-		paths     []string
-		value     T
+		FieldMask  *bitset.BitSet
+		FieldNames []string
+		Value      T
 	}
 )
 
-func NewPartial[T any, S ~string](value T, fieldMask *bitset.BitSet, fieldNames []S) Partial[T] {
-	paths := make([]string, 0, len(fieldNames))
-
-	for _, name := range fieldNames {
-		paths = append(paths, "/"+string(name))
-	}
-
+func NewPartial[T any](value T, fieldMask *bitset.BitSet, fieldNames []string) Partial[T] {
 	return Partial[T]{
-		fieldMask: fieldMask,
-		paths:     paths,
-		value:     value,
+		FieldMask:  fieldMask,
+		FieldNames: fieldNames,
+		Value:      value,
 	}
 }
 
 func (x Partial[T]) MarshalJSON() (_ []byte, err error) {
-	var results []gjson.Result
-
 	paths := x.activePaths()
 
-	byteJSON, err := json.Marshal(x.value)
+	byteJSON, err := json.Marshal(x.Value)
 	if err != nil {
 		return
 	}
 
-	results = gjson.GetManyBytes(byteJSON, paths...)
+	results := gjson.GetManyBytes(byteJSON, paths...)
 	if len(results) != len(paths) {
 		return nil, errors.New("parsing error")
 	}
@@ -67,9 +59,9 @@ func (x Partial[T]) MarshalJSON() (_ []byte, err error) {
 func (x Partial[T]) activePaths() []string {
 	paths := make([]string, 0)
 
-	for i, path := range x.paths {
-		if x.fieldMask.Test(uint(i)) {
-			paths = append(paths, path)
+	for i, fieldName := range x.FieldNames {
+		if x.FieldMask.Test(uint(i)) {
+			paths = append(paths, "/"+fieldName)
 		}
 	}
 
