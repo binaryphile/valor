@@ -56,6 +56,15 @@ func (x Partial[T]) MarshalJSON() (_ []byte, err error) {
 	return patch, nil
 }
 
+func (x Partial[T]) MustMarshalJSON() []byte {
+	byteJSON, err := x.MarshalJSON()
+	if err != nil {
+		panic("error marshaling json")
+	}
+
+	return byteJSON
+}
+
 func (x Partial[T]) activePaths() []string {
 	paths := make([]string, 0)
 
